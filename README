@@ -1,0 +1,37 @@
+===============================================================================
+========================== Client-Server Model Asincron =======================
+===============================================================================
+
+Server:
+    - Pentru a putea crea acest server la care se pot conecta clienti, mi am pus
+    urmatoarele intrebari:
+        Ce fel de IP voi folosi -> IPv4 (4 bytes de adresa)
+        Ce protocol voi folosi  -> TCP (vreau ca mesajele sa vina in ordine si
+                                        complete)
+        Cati clienti voi putea sa tin conectati simultan (Numarul maxim de fd)
+
+    - Am urmat pasii:
+        == PAS 1 ==
+            Am deschis un socket TCP pentru a asculta (verifica) daca vor noi
+            clienti sa se conecteze la server.
+        == PAS 2 ==
+            Am setat IP-ul si PORT-ul serverului
+        == PAS 3 ==
+            Am creat doua seturi:
+                PERMANENT SET -> In acest set voi retine toti file descriptorii
+                                 precum: STDIN, listenfd, socketii clientilor
+                TEMPORAR SET  -> In acest set, dupa apelul select, vor ramane
+                                 doar socketii/file descriptorii pe care s au
+                                 facut modificari
+                                 (ex: primesc un mesaj de la un client)
+       == PAS 4 ==
+            Intr-o bucla infinita am tratat urmatoarele cazuri:
+                - listenfd a primit notificare deci un nou client vrea sa se
+                  conecteze
+                - Am scris o comanda la consola (STDIN) pe care vreau s-o tratez
+                - Am primit un mesaj de la un client pe alt socket/fd decat cei
+                  mentionati mai sus
+
+Client:
+    In cazul clientului am creat un socket pe care il voi folosi pentru a
+    comunica cu serverul.
